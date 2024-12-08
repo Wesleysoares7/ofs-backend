@@ -64,3 +64,29 @@ export const atualizarMembro = async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 };
+
+export const loginMembro = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const membro = await Membro.findOne({ email });
+    if (!membro) {
+      return res.status(404).json({ message: "Usuário não encontrado!" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, membro.password);
+    if (!isPasswordValid) {
+      return res.status(401).json({ message: "Credenciais inválidas!" });
+    }
+
+    res.status(200).json({
+      id: membro._id,
+      name: membro.name,
+      email: membro.email,
+      tipo: membro.tipo,
+      status: membro.status,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
