@@ -83,9 +83,32 @@ export const loginMembro = async (req, res) => {
       id: membro._id,
       name: membro.name,
       email: membro.email,
+      sexo: membro.sexo,
+      phone: membro.phone,
+      logradouro: membro.logradouro,
+      numero: membro.numero,
+      bairro: membro.bairro,
+      cidade: membro.cidade,
+      estado: membro.estado,
+      cep: membro.cep,
       tipo: membro.tipo,
       status: membro.status,
     });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const deletarMembro = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const membroDeletado = await Membro.findByIdAndDelete(id);
+
+    if (!membroDeletado) {
+      return res.status(404).json({ message: "Membro não encontrado." });
+    }
+
+    res.status(200).json({ message: "Membro deletado com sucesso!" });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
