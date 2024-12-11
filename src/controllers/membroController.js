@@ -93,6 +93,7 @@ export const loginMembro = async (req, res) => {
       cep: membro.cep,
       tipo: membro.tipo,
       status: membro.status,
+      foto: membro.foto,
     });
   } catch (error) {
     res.status(500).json({ error: error.message });
