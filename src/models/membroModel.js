@@ -14,7 +14,7 @@ const MembroSchema = new mongoose.Schema({
   cep: { type: String, required: true },
   tipo: {
     type: String,
-    enum: ["iniciante", "formando", "professo"],
+    enum: ["Iniciante", "Formando", "Professo"],
     required: true,
   },
   status: { type: String, enum: ["pendente", "aprovado"], default: "pendente" },
