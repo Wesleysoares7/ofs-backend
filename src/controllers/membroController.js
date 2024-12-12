@@ -7,7 +7,7 @@ export const criarMembro = async (req, res) => {
     const membro = new Membro({
       ...req.body,
       password: hashedPassword,
-      foto: req.file ? `/uploads/${req.file.filename}` : null,
+      foto: req.file ? `/uploads/${req.file.filename}.png` : null,
     });
     await membro.save();
     res.status(201).json({ message: "Membro cadastrado com sucesso!" });
@@ -110,6 +110,50 @@ export const deletarMembro = async (req, res) => {
     }
 
     res.status(200).json({ message: "Membro deletado com sucesso!" });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const obterContagens = async (req, res) => {
+  try {
+    const totalIniciantes = await Membro.countDocuments({ tipo: "iniciante" });
+    const totalFormandos = await Membro.countDocuments({ tipo: "formando" });
+    const totalProfessos = await Membro.countDocuments({ tipo: "professo" });
+    const totalPendentes = await Membro.countDocuments({ status: "pendente" });
+
+    res.status(200).json({
+      totalIniciantes,
+      totalFormandos,
+      totalProfessos,
+      totalPendentes,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const listarPorFiltro = async (req, res) => {
+  const { tipo, status } = req.query;
+  try {
+    const filtro = {};
+    if (tipo) filtro.tipo = tipo;
+    if (status) filtro.status = status;
+
+    const membros = await Membro.find(filtro, "name foto");
+    res.status(200).json(membros || []); // Garante que será retornado um array
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+export const obterDetalhesMembro = async (req, res) => {
+  try {
+    const membro = await Membro.findById(req.params.id);
+    if (!membro) {
+      return res.status(404).json({ message: "Membro não encontrado." });
+    }
+    res.status(200).json(membro);
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
