@@ -20,4 +20,9 @@ router.get("/", listarMembros);
 router.put("/:id", atualizarMembro);
 router.delete("/:id", verificarAdmin, deletarMembro);
 
+// Rota de Login do Administrador
+router.post("/admin/login", verificarAdmin, (req, res) => {
+  res.status(200).json({ message: "Login realizado com sucesso!" });
+});
+
 export default router;
